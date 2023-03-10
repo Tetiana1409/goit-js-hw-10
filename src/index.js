@@ -3,6 +3,7 @@
 // $ npm i notiflix
 
 import './css/styles.css';
+import { fetchCountries } from './js/fetchCountries'; // отримання списку країн
 import Notiflix from 'notiflix'; // для сповіщень
 import debounce from 'lodash.debounce'; // для затримки запиту
 
@@ -14,10 +15,6 @@ const refs = {
   searchList: document.querySelector('.country-list'),
   cardWindow: document.querySelector('.country-info'),
 };
-
-console.log(refs.formInput); // TEST
-console.log(refs.searchList); // TEST
-console.log(refs.cardWindow); // TEST
 
 // -------------------------------------------------------------
 
@@ -33,21 +30,13 @@ function onSearch(e) {
   if (searchQuery !== '') {
     // СТВОРЕННЯ Промісу на отримання данних з сайту https://restcountries.com/v3.1/
 
-    fetchList(searchQuery).then(chackList).catch(onFetchError);
+    fetchCountries(searchQuery).then(chackList).catch(onFetchError);
   } else {
     refs.cardWindow.innerHTML = ''; //   CARD - чистимо
     refs.searchList.innerHTML = ''; //   LIST - чистимо
   }
-  //   ФУНКЦІЯ: Проміс 1/2 - отримаємо список країн з сайту
-  function fetchList(countyID) {
-    return fetch(`https://restcountries.com/v3.1/name/${countyID}`)
-      .then(response => {
-        return response.json();
-      })
-      .catch(onListError);
-  }
 
-  //   ФУНКЦІЯ: Проміс 2/2 - оброблюємо отриманний список країн
+  //   ФУНКЦІЯ: Проміс - оброблюємо отриманний список країн
   function chackList(countyID) {
     let textList = '';
 
